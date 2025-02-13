@@ -1,8 +1,8 @@
-.mod
-.db
-.sum
-.txt
-.DS_Store
+*.mod
+*.db
+*.sum
+*.txt
+*.DS_Store
 
 
 
