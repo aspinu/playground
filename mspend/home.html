@@ -8,39 +8,12 @@
     <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
 
 </head>
-<body class="container">
-
-    <div class="row mt-4 g-4">
-        <div class="col-8">
-            <h1 class="mb-4">Spendings List</h1>
-
-        <ul class="list-group fs-5 me-5" id="spending-list">
-            {{block "spending-list-element" .}}
-              <div class="row">
-                <div class="col p-3 bg-primary text-white">
-                  <li class="list-group-item bg-primary text-white">{{.Name}}</li>
-               </div> 
-                <div class="col p-3 bg-primary text-white">
-                  <li class="list-group-item bg-primary text-white">{{.Amount}}</li>
-               </div> 
-                <div class="col p-3 bg-primary text-white">
-                  <li class="list-group-item bg-primary text-white">{{.Category}}</li>
-               </div> 
-                <div class="col p-3 bg-primary text-white">
-                  <li class="list-group-item bg-primary text-white">{{.Total}}</li>
-               </div> 
-        
-          </div>
-          
-            {{ end }}
-          </ul>          
-                                
-        </div>
-
-        <div class="col-4">
+<body>
+<div class="container">
+       <div class="col-4">
             <h1 class="mb-4">Add Spending</h1>
 
-            <form hx-post="/add-spending/" hx-target="#spending-list" hx-swap="beforeend" hx-load="true" hx-indicator="#spinner">
+            <form hx-post="/add-spending/" id="content">
                 <div class="mb-2">
                     <label for="spending-name">Name</label>
                     <input type="text" name="spending-name" id="spending-name" class="form-control" />
@@ -55,41 +28,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span>
                     Submit
                 </button>
             </form>
         </div>
-
-        <div class="col-4">
-            <h1 class="mb-4">Total</h1>
-             <div class="mb-2">{{ .Total }}</div>
-            
-            <!-- <form hx-post="/add-spending/" hx-target="#spending-list" hx-swap="beforeend" hx-load="true" hx-indicator="#spinner"> -->
-            <!--     <div class="mb-2"> -->
-            <!--         <label for="spending-name">Name</label> -->
-            <!--         <input type="text" name="spending-name" id="spending-name" class="form-control" /> -->
-            <!--     </div> -->
-            <!--     <div class="mb-3"> -->
-            <!--         <label for="spending-amount">Amount</label> -->
-            <!--         <input type="text" name="spending-amount" id="spending-amount" class="form-control" /> -->
-            <!--     </div> -->
-            <!--     <div class="mb-4"> -->
-            <!--         <label for="spending-tag">Tag</label> -->
-            <!--         <input type="text" name="spending-tag" id="spending-tag" class="form-control" /> -->
-            <!--     </div> -->
-            <!---->
-            <!--     <button type="submit" class="btn btn-primary"> -->
-            <!--         <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span> -->
-            <!--         Submit -->
-            <!--     </button> -->
-            <!-- </form> -->
-        </div>
-
-
-
-
-    </div>
+        <button hx-post="/show" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">
+            Show Spendings
+        </button>
+  </div> 
 
 </body>
 </html>

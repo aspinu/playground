@@ -8,20 +8,23 @@ import (
 )
 
 type spending struct {
-	id               int
-	spendingName     string
-	spendingCategory string
-	spendingAmount   int
+	Id               int
+	SpendingName     string
+	SpendingAmount   int
+	SpendingCategory string
 }
 
 func addSpending(db *sql.DB, newSpending spending) {
-	stmt, _ := db.Prepare("INSERT INTO spendings (id, spending_name, spending_amount, spending_cathegory) VALUES (?, ?, ?, ?)")
-	stmt.Exec(nil, newSpending.spendingName, newSpending.spendingCategory, newSpending.spendingAmount)
+	stmt, err := db.Prepare("INSERT INTO spendings (id, spendings_name, spendings_amount, spendings_category) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt.Exec(nil, newSpending.SpendingName, newSpending.SpendingAmount, newSpending.SpendingCategory)
 	defer stmt.Close()
 }
 
 func selectAllSpendings(db *sql.DB) []spending {
-	rows, err := db.Query("SELECT * FROM spendings")
+	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +38,7 @@ func selectAllSpendings(db *sql.DB) []spending {
 	mySpending := make([]spending, 0)
 	for rows.Next() {
 		curentSpending := spending{}
-		err = rows.Scan(&curentSpending.id, &curentSpending.spendingName, &curentSpending.spendingAmount, &curentSpending.spendingCategory)
+		err = rows.Scan(&curentSpending.Id, &curentSpending.SpendingName, &curentSpending.SpendingAmount, &curentSpending.SpendingCategory)
 		if err != nil {
 			log.Fatal(err)
 		}
