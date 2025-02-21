@@ -9,7 +9,7 @@
     <title>Curent Spendings</title>
 </head>
 <body>
-<div class="container">
+<div class="container" id="spendlist">
   <h2>Spendings List</h2>
       <table class="table table-bordered">
         <thead>
@@ -31,14 +31,10 @@
             {{end}}
         </tbody>
     </table>
-
-      <!-- <ul> {{range . }}  -->
-      <!---->
-      <!--     <li>{{.id}} - {{ .spendingName}} - {{ .spendingAmount}} - {{ .spendingCategory}}</li> -->
-      <!---->
-      <!--   {{ end }}  -->
-      <!-- </ul> -->
-</div>
+     <button hx-post="/" hx-trigger="click" hx-target="#spendlist" hx-swap="innerHTML">
+            Add New Spendings
+     </button>
+   </div>
 
 
 </body>
