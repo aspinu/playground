@@ -42,14 +42,6 @@ func showSpendingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
-	// dataFromSql := []spending{
-	// 	{Id: 1, SpendingName: "Kaufland", SpendingAmount: 25, SpendingCategory: "Food"},
-	// 	{Id: 2, SpendingName: "SWM", SpendingAmount: 50, SpendingCategory: "Food"},
-	// 	{Id: 3, SpendingName: "Rewe", SpendingAmount: 9, SpendingCategory: "Food"},
-	// 	// Add all data entries here
-	// }
-
 	dataFromSql := selectAllSpendings(db)
 
 	tmpl := template.Must(template.ParseFiles("listsp.html"))
