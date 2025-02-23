@@ -26,7 +26,7 @@ func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	newSpending := spending{
+	newSpending := spendingLong{
 		SpendingAmount:   amount,
 		SpendingName:     name,
 		SpendingCategory: category,
