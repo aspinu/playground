@@ -36,7 +36,7 @@ func addSpending(db *sql.DB, newSpending spendingLong) {
 	defer stmt.Close()
 }
 
-func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []spendingLong {
+func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []spending {
 	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings WHERE year = '" + slectedYear + "' and month = '" + selectedMonth + "'")
 	if err != nil {
 		log.Fatal(err)
@@ -48,9 +48,9 @@ func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []sp
 		log.Fatal(err)
 	}
 
-	mySpending := make([]spendingLong, 0)
+	mySpending := make([]spending, 0)
 	for rows.Next() {
-		curentSpending := spendingLong{}
+		curentSpending := spending{}
 		err = rows.Scan(&curentSpending.Id, &curentSpending.SpendingName, &curentSpending.SpendingAmount, &curentSpending.SpendingCategory)
 		if err != nil {
 			log.Fatal(err)

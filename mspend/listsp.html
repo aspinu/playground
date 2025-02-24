@@ -31,10 +31,14 @@
             {{end}}
         </tbody>
     </table>
-     <button hx-post="/" hx-trigger="click" hx-target="#spendlist" hx-swap="innerHTML">
+     <button type="button" class="btn btn-primary" hx-post="/" hx-trigger="click" hx-target="#spendlist" hx-swap="innerHTML">
             Add New Spendings
+    </button>
+     <button type="button" class="btn btn-primary" hx-post="/filter-page" hx-trigger="click"  hx-target="#spendlist"hx-swap="innerHTML">
+            Filter Spendings
      </button>
-   </div>
+
+    </div>
 
 
 </body>
