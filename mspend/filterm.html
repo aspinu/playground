@@ -9,8 +9,10 @@
 <body>
 
 <div class="container mt-3">
-      <form>
-    <select id="months" name="months" hx-post="/show-filtered/" hx-trigger="change" hx-target="#content" hx-indicator=".htmx-indicator">
+ <div class="position-absolute top-20 start-20">
+  <form hx-post="/show-filtered/" hx-trigger="change" hx-target="#content" hx-indicator=".htmx-indicator"> 
+    <select class="form-select mt-3" id="months" name="months">
+        <option>Month</option>
         <option value="1">January</option>
         <option value="2">February</option>
         <option value="3">March</option>
@@ -22,13 +24,13 @@
         <option value="9">September</option>
         <option value="10">October</option>
         <option value="11">Novermber</option>
-        <option value="12">December</option>
-      </select>
-  </form>
-      <button type="button" class="btn btn-primary" hx-post="/show-filtered" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">
-            Filter Spendings
-        </button>
- </div>
-
+        <option value="12">December</option> 
+      </select> 
+  </form> 
+      <button type="button" class="btn btn-primary" hx-post="/show-filtered" hx-trigger="click" hx-target="#content" hx-swap="innerHTML"> 
+       Filter Spendings 
+      </button>
+  </div>
+</div>
 </body>
 </html>
