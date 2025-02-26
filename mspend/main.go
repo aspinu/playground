@@ -11,6 +11,11 @@ import (
 
 var tmpl = template.Must(template.ParseFiles("home.html"))
 
+type handlerData struct {
+	DbData []spending
+	Total  int
+}
+
 func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./spendings.db")
 	if err != nil {
@@ -42,10 +47,17 @@ func showSpendingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	dataFromSql := selectAllSpendings(db)
-
+	dataFromSql, total := selectAllSpendings(db)
+	var sumTotal int
+	for _, vals := range total {
+		sumTotal += vals
+	}
+	spendingData := handlerData{
+		DbData: dataFromSql,
+		Total:  sumTotal,
+	}
 	tmpl := template.Must(template.ParseFiles("listsp.html"))
-	tmpl.Execute(w, dataFromSql)
+	tmpl.Execute(w, spendingData)
 }
 
 func showFilteredHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,10 +68,19 @@ func showFilteredHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	year := "2025"
 	month := r.PostFormValue("months")
-	dataFromSql := selectFilteredSpendings(db, year, month)
+
+	data, total := selectFilteredSpendings(db, year, month)
+	var sumTotal int
+	for _, vals := range total {
+		sumTotal += vals
+	}
+	spendingFilteredData := handlerData{
+		DbData: data,
+		Total:  sumTotal,
+	}
 
 	tmpl := template.Must(template.ParseFiles("listsp.html"))
-	tmpl.Execute(w, dataFromSql)
+	tmpl.Execute(w, spendingFilteredData)
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {

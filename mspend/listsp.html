@@ -9,6 +9,14 @@
     <title>Curent Spendings</title>
 </head>
 <body>
+    <div class="container">
+      <div class="position-relative top-20 start-80">
+      <div class="card">
+      <div class="card-header">Total</div>
+          <div class="card-body">{{.Total}}</div>   
+      </div>    
+      </div>
+    </div>  
 <div class="container" id="spendlist">
   <h2>Spendings List</h2>
       <table class="table table-bordered">
@@ -21,7 +29,7 @@
             </tr>
         </thead>
         <tbody>
-            {{range .}}
+          {{range .DbData}}
             <tr>
                 <td>{{.Id}}</td>
                 <td>{{.SpendingName}}</td>
@@ -39,7 +47,6 @@
      </button>
 
     </div>
-
 
 </body>
 </html>

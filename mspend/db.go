@@ -36,7 +36,7 @@ func addSpending(db *sql.DB, newSpending spendingLong) {
 	defer stmt.Close()
 }
 
-func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []spending {
+func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]spending, []int) {
 	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings WHERE year = '" + slectedYear + "' and month = '" + selectedMonth + "'")
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +47,7 @@ func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []sp
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	total := []int{}
 	mySpending := make([]spending, 0)
 	for rows.Next() {
 		curentSpending := spending{}
@@ -55,16 +55,17 @@ func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) []sp
 		if err != nil {
 			log.Fatal(err)
 		}
+		total = append(total, curentSpending.SpendingAmount)
 		mySpending = append(mySpending, curentSpending)
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return mySpending
+	return mySpending, total
 }
 
-func selectAllSpendings(db *sql.DB) []spending {
+func selectAllSpendings(db *sql.DB) ([]spending, []int) {
 	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings")
 	if err != nil {
 		log.Fatal(err)
@@ -75,7 +76,7 @@ func selectAllSpendings(db *sql.DB) []spending {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	total := []int{}
 	mySpending := make([]spending, 0)
 	for rows.Next() {
 		curentSpending := spending{}
@@ -83,11 +84,13 @@ func selectAllSpendings(db *sql.DB) []spending {
 		if err != nil {
 			log.Fatal(err)
 		}
+		total = append(total, curentSpending.SpendingAmount)
+
 		mySpending = append(mySpending, curentSpending)
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return mySpending
+	return mySpending, total
 }
