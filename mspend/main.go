@@ -48,15 +48,15 @@ func showSpendingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	dataFromSql, total := selectAllSpendings(db)
-	var sumTotal int
+	var sumAmount int
 	for _, vals := range total {
-		sumTotal += vals
+		sumAmount += vals
 	}
 	spendingData := handlerData{
 		DbData: dataFromSql,
-		Total:  sumTotal,
+		Total:  sumAmount,
 	}
-	tmpl := template.Must(template.ParseFiles("listsp.html"))
+	tmpl := template.Must(template.ParseFiles("spending_list.html"))
 	tmpl.Execute(w, spendingData)
 }
 
@@ -69,17 +69,17 @@ func showFilteredHandler(w http.ResponseWriter, r *http.Request) {
 	year := "2025"
 	month := r.PostFormValue("months")
 
-	data, total := selectFilteredSpendings(db, year, month)
-	var sumTotal int
+	dataFromSql, total := selectFilteredSpendings(db, year, month)
+	var sumAmount int
 	for _, vals := range total {
-		sumTotal += vals
+		sumAmount += vals
 	}
 	spendingFilteredData := handlerData{
-		DbData: data,
-		Total:  sumTotal,
+		DbData: dataFromSql,
+		Total:  sumAmount,
 	}
 
-	tmpl := template.Must(template.ParseFiles("listsp.html"))
+	tmpl := template.Must(template.ParseFiles("spending_list.html"))
 	tmpl.Execute(w, spendingFilteredData)
 }
 
@@ -88,7 +88,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func filterHandler(w http.ResponseWriter, r *http.Request) {
-	tmp := template.Must(template.ParseFiles("filterm.html"))
+	tmp := template.Must(template.ParseFiles("months_filter.html"))
 	tmp.Execute(w, nil)
 }
 
