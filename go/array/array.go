@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -27,6 +28,8 @@ func main() {
 
 	}
 	sort.Ints(arry)
+	Year, Month, Day := time.Now().Date()
+	fmt.Println(Day, Month, Year)
 	fmt.Println(arry)
 	fmt.Println("Smallest number in array is: ", arry[0])
 }
