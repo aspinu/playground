@@ -37,7 +37,7 @@ func addSpending(db *sql.DB, newSpending spendingLong) {
 }
 
 func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]spending, []int) {
-	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings WHERE year = '" + slectedYear + "' and month = '" + selectedMonth + "'")
+	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM spendings WHERE year = '" + slectedYear + "' and month = '" + selectedMonth + "'")
 	if err != nil {
 		log.Fatal(err)
 	}
