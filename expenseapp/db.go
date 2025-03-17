@@ -11,14 +11,14 @@ import (
 type spending struct {
 	Id               int
 	SpendingName     string
-	SpendingAmount   int
+	SpendingAmount   float64
 	SpendingCategory string
 }
 
 type spendingLong struct {
 	Id               int
 	SpendingName     string
-	SpendingAmount   int
+	SpendingAmount   float64
 	SpendingCategory string
 	Day              int
 	Month            string
@@ -36,7 +36,7 @@ func addSpending(db *sql.DB, newSpending spendingLong) {
 	defer stmt.Close()
 }
 
-func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]spending, []int) {
+func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]spending, []float64) {
 	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM spendings WHERE year = '" + slectedYear + "' and month = '" + selectedMonth + "'")
 	if err != nil {
 		log.Fatal(err)
@@ -47,8 +47,8 @@ func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]s
 	if err != nil {
 		log.Fatal(err)
 	}
-	total := []int{}
-	mySpending := make([]spending, 0)
+	total := []float64{}
+	expense := make([]spending, 0)
 	for rows.Next() {
 		curentSpending := spending{}
 		err = rows.Scan(&curentSpending.Id, &curentSpending.SpendingName, &curentSpending.SpendingAmount, &curentSpending.SpendingCategory)
@@ -56,16 +56,16 @@ func selectFilteredSpendings(db *sql.DB, slectedYear, selectedMonth string) ([]s
 			log.Fatal(err)
 		}
 		total = append(total, curentSpending.SpendingAmount)
-		mySpending = append(mySpending, curentSpending)
+		expense = append(expense, curentSpending)
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return mySpending, total
+	return expense, total
 }
 
-func selectAllSpendings(db *sql.DB) ([]spending, []int) {
+func selectAllSpendings(db *sql.DB) ([]spending, []float64) {
 	rows, err := db.Query("SELECT id, spendings_name, spendings_amount, spendings_category FROM  spendings")
 	if err != nil {
 		log.Fatal(err)
@@ -76,8 +76,8 @@ func selectAllSpendings(db *sql.DB) ([]spending, []int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	total := []int{}
-	mySpending := make([]spending, 0)
+	total := []float64{}
+	expense := make([]spending, 0)
 	for rows.Next() {
 		curentSpending := spending{}
 		err = rows.Scan(&curentSpending.Id, &curentSpending.SpendingName, &curentSpending.SpendingAmount, &curentSpending.SpendingCategory)
@@ -86,11 +86,11 @@ func selectAllSpendings(db *sql.DB) ([]spending, []int) {
 		}
 		total = append(total, curentSpending.SpendingAmount)
 
-		mySpending = append(mySpending, curentSpending)
+		expense = append(expense, curentSpending)
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return mySpending, total
+	return expense, total
 }
