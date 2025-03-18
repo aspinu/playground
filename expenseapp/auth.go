@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Login struct {
@@ -38,6 +39,38 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	user, ok := users[username]
+	if !ok || !chekcPasswordHash(password, user.HashedPassowrd) {
+		err := http.StatusUnauthorized
+		http.Error(w, "Invalid username or password!", err)
+		return
+	}
+
+	sessionToken := generateToken(32)
+	csrfToken := generateToken(32)
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    sessionToken,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: true,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "csrf_Token",
+		Value:    csrfToken,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: false,
+	})
+
+	user.SessionToken = sessionToken
+	user.CSRFToken = csrfToken
+	users[username] = user
+
+	fmt.Println("Login succesful!")
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
