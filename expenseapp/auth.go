@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,14 +9,50 @@ import (
 )
 
 type Login struct {
-	HashedPassowrd string
-	SessionToken   string
-	CSRFToken      string
+	Username         string
+	HashedPassowrd   string
+	SessionToken     string
+	CSRFToken        string
+	UserExpenseTable string
 }
 
 var users = map[string]Login{}
 
+func createUsersTable(db *sql.DB) error {
+	const createUsersTable = `
+  CREATE TABLE "users" (
+  "UserID" TEXT, 
+  "Username" TEXT,
+  "HashedPassowrd" TEXT,
+  "SessionToken" TEXT,
+  "CSRFToken" TEXT,
+  "UserExpenseTable" TEXT,
+  PRIMARY KEY("UserID" AUTOINCREMENT)
+);`
+	_, err := db.Exec(createUsersTable)
+
+	return err
+}
+
+func registerUser(db *sql.DB, newUser Login) error {
+	stmt, err := db.Prepare("INSERT INTO users (Userid, Username, HashedPassowrd, SessionToken, CSRFToken, UserExpenseTable) VALUES (?, ?, ?, ?, ?, ?)")
+	stmt.Exec(nil, newUser.Username, newUser.HashedPassowrd, newUser.SessionToken, newUser.CSRFToken, newUser.UserExpenseTable)
+	defer stmt.Close()
+
+	return err
+}
+
+func checkUsername(username string) error {
+	return nil
+}
+
 func register(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("sqlite3", "./spendings.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	if len(username) < 8 || len(password) < 8 {
@@ -23,17 +60,25 @@ func register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid username or password!", err)
 		return
 	}
-	if _, ok := users[username]; ok {
-		err := http.StatusConflict
-		http.Error(w, "User already exists", err)
-		return
-	}
+
 	hashedPassowrd, err := hashPassword(password)
 	if err != nil {
 		log.Fatal(err)
 	}
-	users[username] = Login{
-		HashedPassowrd: hashedPassowrd,
+
+	newUser := Login{
+		username,
+		hashedPassowrd,
+		"",
+		"",
+		username,
+	}
+
+	er := registerUser(db, newUser)
+	if er != nil {
+		err := http.StatusConflict
+		http.Error(w, "User already exists", err)
+		return
 	}
 	fmt.Fprintln(w, "User registered succesfully!")
 }
