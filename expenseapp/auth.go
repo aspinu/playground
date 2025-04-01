@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -18,10 +19,18 @@ type Login struct {
 
 var users = map[string]Login{}
 
+func createExpUsrTable(db *sql.DB, username string) error {
+	createUsersTable := "CREATE TABLE " + username + "(id, spendings_name, spendings_amount, spendings_category, year, month, day, PRIMARY KEY(id AUTOINCREMENT));"
+
+	_, err := db.Exec(createUsersTable)
+
+	return err
+}
+
 func createUsersTable(db *sql.DB) error {
 	const createUsersTable = `
-  CREATE TABLE "users" (
-  "UserID" TEXT, 
+  CREATE TABLE IF NOT EXISTS "users" (
+  "UserID" INTEGER, 
   "Username" TEXT,
   "HashedPassowrd" TEXT,
   "SessionToken" TEXT,
@@ -35,18 +44,28 @@ func createUsersTable(db *sql.DB) error {
 }
 
 func registerUser(db *sql.DB, newUser Login) error {
-	stmt, err := db.Prepare("INSERT INTO users (Userid, Username, HashedPassowrd, SessionToken, CSRFToken, UserExpenseTable) VALUES (?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO users (UserID, Username, HashedPassowrd, SessionToken, CSRFToken, UserExpenseTable) VALUES (?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
 	stmt.Exec(nil, newUser.Username, newUser.HashedPassowrd, newUser.SessionToken, newUser.CSRFToken, newUser.UserExpenseTable)
 	defer stmt.Close()
+	er := createExpUsrTable(db, newUser.Username)
+	if er != nil {
+		log.Fatal(er)
+	}
 
 	return err
 }
 
-func checkUsername(username string) error {
-	return nil
+func checkUsername(db *sql.DB, username string) error {
+	checkUserExists := "SELECT * from users where Username like '%" + username + "'%"
+	_, err := db.Exec(checkUserExists)
+
+	return err
 }
 
-func register(w http.ResponseWriter, r *http.Request) {
+func registerHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./spendings.db")
 	if err != nil {
 		log.Fatal(err)
@@ -65,12 +84,16 @@ func register(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	error := checkUsername(db, username)
+	if error != nil {
+		log.Fatal(error)
+	}
 
 	newUser := Login{
 		username,
 		hashedPassowrd,
-		"",
-		"",
+		"x",
+		"x",
 		username,
 	}
 
@@ -80,7 +103,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "User already exists", err)
 		return
 	}
-	fmt.Fprintln(w, "User registered succesfully!")
+	tmpl := template.Must(template.ParseFiles("home.html"))
+	tmpl.Execute(w, nil)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {

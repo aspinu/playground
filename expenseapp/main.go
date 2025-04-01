@@ -84,6 +84,17 @@ func showFilteredHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("sqlite3", "./spendings.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	er := createUsersTable(db)
+	if er != nil {
+		log.Fatal(er)
+	}
+	defer db.Close()
+	tmpl := template.Must(template.ParseFiles("auth.html"))
+
 	tmpl.Execute(w, nil)
 }
 
@@ -100,6 +111,7 @@ func main() {
 	mux.HandleFunc("/", homeHandler)
 	mux.HandleFunc("/show-filtered/", showFilteredHandler)
 	mux.HandleFunc("/filter-page/", filterHandler)
+	mux.HandleFunc("/auth-login/", registerHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
