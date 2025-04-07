@@ -86,9 +86,9 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	error := checkUsername(db, username)
 	if error != nil {
-		log.Fatal(error)
+		http.Error(w, error.Error(), http.StatusInternalServerError)
+		return
 	}
-
 	newUser := Login{
 		username,
 		hashedPassowrd,
@@ -108,11 +108,19 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("sqlite3", "./spendings.db")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
-	user, ok := users[username]
-	if !ok || !chekcPasswordHash(password, user.HashedPassowrd) {
+	// user, ok := users[username]
+	errs := checkUsername(db, username)
+	if errs != nil {
+
+		err := http.StatusUnauthorized
+		http.Error(w, "Invalid username or password!", err)
+		return
+	}
+	if err != nil || !chekcPasswordHash(password, user.HashedPassowrd) {
 		err := http.StatusUnauthorized
 		http.Error(w, "Invalid username or password!", err)
 		return
