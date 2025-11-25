@@ -12,7 +12,7 @@ import (
 var tmpl = template.Must(template.ParseFiles("home.html"))
 
 type handlerData struct {
-	DbData []spending
+	DbData []Spending
 	Total  float64
 }
 
@@ -31,11 +31,10 @@ func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	newSpending := spendingLong{
-		SpendingAmount:   amount,
-		SpendingName:     name,
-		SpendingCategory: category,
-	}
+	newSpending := SpendingLong{}
+	newSpending.Spending.SpendingAmount = amount
+	newSpending.Spending.SpendingName = name
+	newSpending.Spending.SpendingCategory = category
 
 	addSpending(db, newSpending)
 	tmpl.ExecuteTemplate(w, "spending-location-element", nil)
