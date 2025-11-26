@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var tmpl = template.Must(template.ParseFiles("home.html"))
@@ -14,6 +15,18 @@ var tmpl = template.Must(template.ParseFiles("home.html"))
 type handlerData struct {
 	DbData []Spending
 	Total  float64
+}
+
+func newSpendingLong(name, category string, amount float64) SpendingLong {
+	newTime := time.Now()
+	newSpending := SpendingLong{}
+	newSpending.Spending.SpendingAmount = amount
+	newSpending.Spending.SpendingName = name
+	newSpending.Spending.SpendingCategory = category
+	newSpending.Day = newTime.Day()
+	newSpending.Month = newTime.Month().String()
+	newSpending.Year = newTime.Year()
+	return newSpending
 }
 
 func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,12 +44,7 @@ func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	newSpending := SpendingLong{}
-	newSpending.Spending.SpendingAmount = amount
-	newSpending.Spending.SpendingName = name
-	newSpending.Spending.SpendingCategory = category
-
-	addSpending(db, newSpending)
+	addSpending(db, newSpendingLong(name, category, amount))
 	tmpl.ExecuteTemplate(w, "spending-location-element", nil)
 }
 

@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"log"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -22,14 +21,12 @@ type SpendingLong struct {
 	Year     int
 }
 
-var Year, Month, Day = time.Now().Date()
-
 func addSpending(db *sql.DB, newSpending SpendingLong) {
 	stmt, err := db.Prepare("INSERT INTO spendings (id, spendings_name, spendings_amount, spendings_category, year, month, day) VALUES (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt.Exec(nil, newSpending.Spending.SpendingName, newSpending.Spending.SpendingAmount, newSpending.Spending.SpendingCategory, Year, Month, Day)
+	stmt.Exec(nil, newSpending.Spending.SpendingName, newSpending.Spending.SpendingAmount, newSpending.Spending.SpendingCategory, newSpending.Year, newSpending.Month, newSpending.Day)
 	defer stmt.Close()
 }
 
