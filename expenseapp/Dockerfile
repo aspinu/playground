@@ -1,5 +1,5 @@
 
-FROM golang:1.24
+FROM golang:1.25-alpine
 
 WORKDIR /usr/src/expenseapp
 
