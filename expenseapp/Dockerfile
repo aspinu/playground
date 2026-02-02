@@ -1,28 +1,26 @@
-
 FROM golang:1.25-alpine AS builder
 
-RUN apk add build-base
- 
+RUN apk add --no-cache build-base
 
-WORKDIR /usr/src
+WORKDIR /usr/src/expenseapp
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-ENV CGO_ENABLED=1
+RUN CGO_ENABLED=1 GOOS=linux go build \
+    -ldflags="-w -s" \
+   -o expenseapp .
 
-RUN go build -v -o expenseapp .
-
-FROM alpine:3.18
+FROM alpine:3.21
  
 # Install SQLite runtime libraries (libsqlite3.so)
 RUN apk add --no-cache sqlite-libs
- 
-# Copy the binary from the builder stage
-COPY --from=builder /usr/src/expenseapp /usr/local/bin/
 
+WORKDIR /usr/src/expenseapp
+# Copy the binary from the builder stage
+COPY --from=builder /usr/src/expenseapp . 
 
 EXPOSE 8080 
 
