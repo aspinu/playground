@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -38,10 +39,15 @@ func addSpedingHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.PostFormValue("spending-name")
 	amountStr := r.PostFormValue("spending-amount")
+	if amountStr == "" {
+		fmt.Fprint(w, "This field is required")
+		return
+	}
 	category := r.PostFormValue("spending-category")
 	amount, err := strconv.ParseFloat(strings.Trim(amountStr, "\n"), 64)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprint(w, "Please enter a valid decimal number")
+		return
 	}
 
 	addSpending(db, newSpendingLong(name, category, amount))
