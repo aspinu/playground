@@ -11,7 +11,10 @@ import (
 	"time"
 )
 
-var tmpl = template.Must(template.ParseFiles("home.html"))
+var (
+	tmpl    = template.Must(template.ParseFiles("home.html"))
+	newTime = time.Now()
+)
 
 type handlerData struct {
 	DbData []Spending
@@ -19,7 +22,6 @@ type handlerData struct {
 }
 
 func newSpendingLong(name, category string, amount float64) SpendingLong {
-	newTime := time.Now()
 	newSpending := SpendingLong{}
 	newSpending.Spending.SpendingAmount = amount
 	newSpending.Spending.SpendingName = name
@@ -79,7 +81,12 @@ func showFilteredHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	year := "2025"
+	var year string
+	if r.PostFormValue("year") == "" {
+		year = strconv.Itoa(newTime.Year())
+	} else {
+		year = r.PostFormValue("year")
+	}
 	month := r.PostFormValue("months")
 
 	dataFromSql, total := selectFilteredSpendings(db, year, month)

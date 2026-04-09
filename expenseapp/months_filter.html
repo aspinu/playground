@@ -1,36 +1,50 @@
 <html lang="en">
-<head>
-  <title>Filter Spendings</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-
-<div class="container mt-3">
- <div class="position-absolute top-20 start-20">
-  <form hx-post="/show-filtered/" hx-trigger="change" hx-target="#content" hx-indicator=".htmx-indicator"> 
-    <select class="form-select mt-3" id="months" name="months">
-        <option>Month</option>
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="Novermber">Novermber</option>
-        <option value="December">December</option> 
-      </select> 
-  </form> 
-      <button type="button" class="btn btn-primary" hx-post="/show-filtered" hx-trigger="click" hx-target="#content" hx-swap="innerHTML"> 
-       Filter Spendings 
-      </button>
-  </div>
-</div>
-</body>
+  <head>
+    <title>Filter Spendings</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <div class="container mt-3">
+      <div class="position-absolute top-20 start-20">
+        <form hx-indicator=".htmx-indicator">
+          <select class="form-select mt-3" id="months" name="months">
+            <option>Month</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="Novermber">Novermber</option>
+            <option value="December">December</option>
+          </select>
+          <select class="form-select mt-3" id="year" name="year">
+            <option>Year</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </form>
+        <button
+          type="button"
+          class="btn btn-primary"
+          hx-post="/show-filtered/"
+          hx-trigger="click"
+          hx-target="#content"
+          hx-swap="innerHTML"
+        >
+          Filter Spendings
+        </button>
+      </div>
+    </div>
+  </body>
 </html>
