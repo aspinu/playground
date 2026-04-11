@@ -25,9 +25,9 @@ func (store *DataStore) Init() error {
 	}
 	// defer store.db.Close()
 	stetment := `CREATE TABLE IF NOT EXISTS notes (
-		id integer not null primary key,
-		title text not null,
-		body text not null
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		title TEXT not null,
+		body TEXT not null
 	);`
 	if _, err := store.db.Exec(stetment); err != nil {
 		return err
