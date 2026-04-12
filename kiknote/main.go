@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	store := new(DataStore)
+	store := &DataStore{}
 	if err := store.Init(); err != nil {
 		log.Fatalf("unable to init store: %v", err)
 	}
