@@ -42,7 +42,7 @@ func (m model) View() tea.View {
 			}
 			s += listEnumeratorStyle.Render(prefix) + n.Title + " | " + faint.Render(shortBody) + "\n\n"
 		}
-		s += faint.Render("n - new note • q - quit")
+		s += faint.Render("n - new note • d -delete • q - quit")
 	}
 	v := tea.NewView(s)
 	return v

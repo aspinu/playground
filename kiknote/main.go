@@ -9,6 +9,12 @@ import (
 )
 
 func main() {
+	// home, _ := os.UserHomeDir()
+	// filename := filepath.Join(home, "Repositories", "playground", "kiknote", "errors")
+	// file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0666)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	store := &DataStore{}
 	if err := store.Init(); err != nil {
 		log.Fatalf("unable to init store: %v", err)

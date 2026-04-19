@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -57,15 +56,26 @@ func (store *DataStore) GetNotes() ([]Note, error) {
 
 func (store *DataStore) SaveNotes(note Note) error {
 	// curentTime := time.Now().Format("2017-09-07")
-	if note.Id == 0 {
-		// pseudo-unique id
-		note.Id = time.Now().Minute()
-	}
+	// if note.Id == 0 {
+	// 	// pseudo-unique id
+	// 	note.Id = time.Now().Minute()
+	// }
 	stmt, err := store.db.Prepare("INSERT INTO notes (id, title, body ) VALUES (?, ?, ? ) ON CONFLICT(id) DO UPDATE SET title=excluded.title, body=excluded.body;")
 	if err != nil {
 		return err
 	}
 	stmt.Exec(nil, note.Title, note.Body)
+	defer stmt.Close()
+
+	return nil
+}
+
+func (store *DataStore) DeleteNote(note Note) error {
+	stmt, err := store.db.Prepare("DELETE FROM people where id = ?")
+	if err != nil {
+		return err
+	}
+	stmt.Exec(note.Id)
 	defer stmt.Close()
 
 	return nil

@@ -72,6 +72,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.cursor < len(m.notes)-1 {
 					m.cursor++
 				}
+			case "d":
+				m.note = m.notes[m.cursor]
+				err = m.store.DeleteNote(m.note)
+				if err != nil {
+					// file.WriteString(err)
+					return m, tea.Quit
+				}
 			case "n":
 				m.textinput.SetValue("")
 				m.textinput.Focus()
