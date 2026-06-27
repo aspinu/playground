@@ -64,7 +64,7 @@ func (store *DataStore) SaveNotes(note Note) error {
 	if err != nil {
 		return err
 	}
-	stmt.Exec(nil, note.Title, note.Body)
+	stmt.Exec(note.Id, note.Title, note.Body)
 	defer stmt.Close()
 
 	return nil
